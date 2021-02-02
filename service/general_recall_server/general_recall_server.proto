@@ -1,0 +1,78 @@
+// protoc -I ./ ./general_recall_server.proto --go_out=plugins=grpc:.
+
+syntax = "proto3";
+option go_package = "../general_recall_server;general_recall_server";
+
+
+service GeneralRecallService {
+  rpc RecallResult(RecallResultReq) returns (RecallResultRsp){};
+
+  rpc RecallReloadRStrategy(GeneralReloadRStrategyReq) returns (GeneralReloadRStrategyRsp){};
+
+  rpc RecallReloadRSSubStrategy(GeneralReloadRSSubtrategyReq) returns (GeneralReloadRSSubStrategyRsp){};
+
+}
+
+
+message RecallResultReq{
+	string uid = 1;
+	int64 itemsize = 2;
+	string rs_strategy_id = 3;
+	string rs_strategy_client_id = 4;
+	int64 rs_strategy_scene_id =5;
+}
+
+
+message RecallResultRsp{
+	int64 code = 1;    //返回码
+	string uid = 2;    // 用户ID
+	repeated Item item_list = 3 ;  //物品列表
+}
+
+
+message Item{
+	string item_id = 1;				//物品id
+	int64 item_scene_id =2; 			//物品场景id
+	int64 item_type_id =3; 				//物品类别id
+	float item_hot_rank = 4;			//物品热度
+	string item_name = 5;				//物品标题
+	string item_info = 6; 				//物品文本
+	float item_price = 7; 				//物品价格
+	string item_tags = 8;				//物品标签信息
+	int64 item_modif_time = 9; 			//物品最近修改时间  
+	int64 item_create_timestamp = 10; 	//物品初次发布时间
+	string item_city = 11;			//物品城市
+	string item_create_userid = 12; 	//物品发布者
+	string reserve_property_1 = 13;		//保留字段1
+	string reserve_property_2 = 14;		//保留字段2
+	string reserve_property_3 = 15;		//保留字段3
+	string reserve_property_4 = 16;		//保留字段4
+
+	repeated int64 item_recall_strategy = 17;  //召回策略
+	int64 item_rank_strategy = 18;    //排序策略
+	repeated int64 item_rerank_strategy = 19;  //重排策略
+}
+
+
+message GeneralReloadRStrategyReq{
+	int64 rs_strategy_index = 1;
+	string cmd = 2; //"ADD", "UPDATE", "DELETE"
+}
+
+
+message GeneralReloadRStrategyRsp{
+	int64 code = 1;		// 返回码 0:成功
+	string message = 2;	// 返回信息
+}
+
+
+message GeneralReloadRSSubtrategyReq{
+	int64 rs_id = 1;
+	string cmd = 2; //"ADD", "UPDATE", "DELETE"
+}
+
+
+message GeneralReloadRSSubStrategyRsp{
+	int64 code = 1;		// 返回码 0:成功
+	string message = 2;	// 返回信息
+}
