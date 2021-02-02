@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/afex/hystrix-go/hystrix"
 	"github.com/asim/go-micro/plugins/registry/etcd/v3"
+	ratelimit "github.com/asim/go-micro/plugins/wrapper/ratelimiter/uber/v3"
 	"github.com/asim/go-micro/v3"
 	"github.com/asim/go-micro/v3/client"
 	"github.com/asim/go-micro/v3/registry"
@@ -48,6 +49,7 @@ func InitRpcClient() {
 	service := micro.NewService(
 		micro.Registry(reg),
 		micro.WrapClient(NewMyClientWrapper()),
+		micro.WrapHandler(ratelimit.NewHandlerWrapper(2000)), //客户端限流保护
 	)
 	// Initialise the client and parse command line flags
 	service.Init()

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/asim/go-micro/plugins/registry/etcd/v3"
+	"github.com/asim/go-micro/plugins/wrapper/ratelimiter/uber/v3"
 	"github.com/asim/go-micro/v3"
 	"github.com/asim/go-micro/v3/registry"
 	"github.com/asim/go-micro/v3/server"
@@ -23,6 +24,7 @@ func main() {
 		micro.RegisterTTL(time.Second*30),
 		micro.RegisterInterval(time.Second*15),
 		micro.Version("latest"),
+		micro.WrapHandler(ratelimit.NewHandlerWrapper(3000)), //服务端限流保护
 	)
 
 	service.Server().Init(
